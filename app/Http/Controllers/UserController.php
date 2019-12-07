@@ -14,7 +14,7 @@ class UserController extends Controller
     public function register(Request $request){
         //1.Recoger los datos del usuario por post        
         //Formato Json
-        //{"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com","password":"lilia"}        
+        //{"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com","password":"lilia"}
         $json         = $request->input("json", null); //En caso no me llegara el valor seria null
         $params       = json_decode($json);            //Convierte json en un objeto de php
         $params_array = json_decode($json, true);      //Convierte json en un array de php
@@ -56,7 +56,7 @@ class UserController extends Controller
         if($es_validacion_correcta){
             //3.Cifrar contraseña
             //$pwd = password_hash($params_array['password'], PASSWORD_BCRYPT, ['cost' => 4]);
-            $pwd = hash("MD5",$params_array['password']);
+            $pwd = hash("MD5", $params_array['password']);
 
             //4.Crear el usuario
             $user = new User();
@@ -65,7 +65,7 @@ class UserController extends Controller
             $user->email    = $params_array['email'];
             $user->password = $pwd;
             $user->role     = "ROLE_USER";
-            //var_dump($user);
+            //print_r($user);
             //die();
 
             //5.Guardar el usuario
