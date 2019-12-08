@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 
+use App\Helpers\JwtAuth; //Agregado, tendremos acceso a la clase JwtAuth
+
 class UserController extends Controller
 {
     public function pruebas(Request $request){
@@ -74,7 +76,7 @@ class UserController extends Controller
             $data = array(
                 "status"  => "success",
                 "code"    => "200",
-                "message" => "El usuario se ha creado correctamente",
+                "message" => "El usuario se ha creado correctamente, json mal formateado",
                 "user"    => $user               
             );
         }
@@ -84,6 +86,54 @@ class UserController extends Controller
     }
 
     public function login(Request $request){
-        return "Accion de login de usuarios";
+        $jwtAuth = new JwtAuth();
+
+        //1.Recibir los datos por POST
+        $json         = $request->input("json", null);
+        $params       = json_decode($json);
+        $params_array = json_decode($json, true);
+
+        //2.Validar los datos
+        $es_validacion_correcta = false;
+        if(!empty($params_array)){
+            $params_array = array_map("trim", $params_array);
+
+            $validate = \Validator::make($params_array, [                
+                "email"    => "required|email",
+                "password" => "required"
+            ]);
+
+            if($validate->fails()){
+                $data = array(
+                    "status"  => "error",
+                    "code"    => "404",
+                    "message" => "El usuario no se ha creado",
+                    "errors"  => $validate->errors()
+                );
+            }else{
+                $es_validacion_correcta = true;                
+            }
+        }else{
+            $data = array(
+                "status"  => "error",
+                "code"    => "404",
+                "message" => "Los datos enviados no son los correctos, json mal formateado"                
+            );
+        }
+
+        if($es_validacion_correcta){
+            //3.Cifrar contraseña
+            $email = $params_array['email'];
+            $pwd   = hash("MD5", $params_array['password']);
+            
+            //4.Devolver token o datos
+            $data = $jwtAuth->signup($email, $pwd);
+            if(!empty($params_array['getToken'])){
+                $data = $jwtAuth->signup($email, $pwd, true);
+            }            
+        }                                    
+
+        //Convierte array en json                
+        return response()->json($data, 200); 
     }
 }
