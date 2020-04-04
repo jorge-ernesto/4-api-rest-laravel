@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $table = 'categories'; //La tabla que utilizara de la bd es categories
+    protected $table = 'categories';
 
-    //Relacion de uno a muchos (Una categoria puede tener muchos posts)
+    /* Relacion de uno a muchos (Una categoria puede tener muchos posts) */
     public function post(){
         return $this->hasMany("App\Post");
     }

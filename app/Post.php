@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $table = 'posts'; //La tabla que utilizara de la bd es posts
+    protected $table = 'posts';
 
-    //Relacion de uno a muchos inversa (muchos a uno) (Un post solo tiene un usuario y categoria)
+    /* Relacion de muchos a uno (Un post solo tiene un usuario y una categoria) */
     public function user(){
         return $this->belongsTo("App\User", "user_id");
     }
