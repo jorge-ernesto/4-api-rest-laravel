@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\User;
+use App;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\JwtAuth;
 
@@ -51,7 +51,7 @@ class UserController extends Controller
 
         /* Guardamos users */
         if($es_validacion_correcta):                                            
-            $user           = new User();
+            $user           = new App\User;
             $user->name     = $params_array['name'];
             $user->surname  = $params_array['surname'];
             $user->role     = "ROLE_USER";     
