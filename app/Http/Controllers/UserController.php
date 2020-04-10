@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Helpers\JwtAuth;
 
 class UserController extends Controller
@@ -24,19 +25,19 @@ class UserController extends Controller
         if(!empty($params_array)):
             $params_array = array_map("trim", $params_array);
 
-            $validate = Validator::make($params_array, [
+            $validator = Validator::make($params_array, [
                 "name"     => "required|alpha",
                 "surname"  => "required|alpha",
                 "email"    => "required|email|unique:users", //El campo email no se podra repetir
                 "password" => "required"
             ]);
 
-            if($validate->fails()):
+            if($validator->fails()):
                 $data = array(
                     "status"  => "error",
                     "code"    => "404",
                     "message" => "El usuario no se ha creado",
-                    "errors"  => $validate->errors()
+                    "errors"  => $validator->errors()
                 );
             else:
                 $es_validacion_correcta = true;                
@@ -83,17 +84,17 @@ class UserController extends Controller
         if(!empty($params_array)):
             $params_array = array_map("trim", $params_array);
 
-            $validate = Validator::make($params_array, [                
+            $validator = Validator::make($params_array, [
                 "email"    => "required|email",
                 "password" => "required"
             ]);
 
-            if($validate->fails()):
+            if($validator->fails()):
                 $data = array(
                     "status"  => "error",
                     "code"    => "404",
                     "message" => "El usuario no se ha creado",
-                    "errors"  => $validate->errors()
+                    "errors"  => $validator->errors()
                 );
             else:
                 $es_validacion_correcta = true;                

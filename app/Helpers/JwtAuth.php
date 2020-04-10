@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Helpers; //Agregado, el namespace de la clase
+namespace App\Helpers; //Namespace de la clase
 
-use App\User;
-use Illuminate\Support\Facades\DB;
+use App;
 use Firebase\JWT\JWT;
 
-class JwtAuth{
-
+class JwtAuth
+{
     public $key;
 
     public function __construct(){
@@ -16,10 +15,10 @@ class JwtAuth{
 
     public function signup($email, $password, $getToken = null){
         /* Verificar usuario */
-        $user = User::table('users')
-                    ->where("email", "=", $email)
-                    ->where("password", "=", $password)
-                    ->get();
+        $user = App\User::table('users')
+                        ->where("email", "=", $email)
+                        ->where("password", "=", $password)
+                        ->get();
 
         if(is_object($user)):
             $token = array(
@@ -47,7 +46,4 @@ class JwtAuth{
         
         return $data;
     }
-
 }
-
-?>

@@ -27,16 +27,6 @@ Route::post("/api/login", "UserController@login");
 
 /* Pruebas */
 Route::get('/test', function(){
-    // return $data = App\Category::find(1)
-    //                 ->post()                    
-    //                 ->get();
-    // return $data = App\Post::find(1)
-    //                 ->category()                    
-    //                 ->get();
-    // return $data = App\Post::find(1)
-    //                 ->user()                    
-    //                 ->get();
-
     /* Post */
     $dataPost  = App\Post::all();
     $dataPost  = App\Post::paginate(10);
@@ -49,8 +39,8 @@ Route::get('/test', function(){
         echo "<p> {$post->user->name}    </p>";
         echo "<p> {$post->category->name}</p>";
         echo "<hr>";
-    endforeach;     
-    /* Fin Post */  
+    endforeach;
+    /* Fin Post */
 
     /* Category */
     $dataCategory  = App\Category::all();
@@ -60,7 +50,7 @@ Route::get('/test', function(){
                         ->get();
 
     foreach($dataCategory as $key=>$category):
-        echo "<h1>{$category->name}</h2>";
+        echo "<h1>{$category->name}</h1>";
 
         foreach($category->posts as $key=>$post):
             echo "<h3>{$post->title}         </h3>";
