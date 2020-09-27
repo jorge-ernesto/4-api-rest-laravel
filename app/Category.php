@@ -14,7 +14,8 @@ class Category extends Model
         "name"        
     ];
 
-    /* Relacion de uno a muchos (Una categoria puede tener muchos posts) */
+    /* RELACION DE UNO A MUCHOS */
+    //Una categoria puede tener muchos posts
     public function posts(){
         return $this->hasMany("App\Post");
     }

@@ -23,42 +23,40 @@ Route::get('/', function () {
 });
 
 Route::post("/api/register", "UserController@register");
-Route::post("/api/login", "UserController@login");
+Route::post("/api/login"   , "UserController@login");
 
-/* Pruebas */
+/* Ruta para pruebas */
 Route::get('/test', function(){
     /* Post */
-    $dataPost  = App\Post::all();
-    $dataPost  = App\Post::paginate(10);
+    $dataPost  = App\Post::all();    
     $dataPost2 = DB::select('select * from posts');
     $dataPost3 = DB::table('posts')
                     ->get();
 
-    foreach($dataPost as $key=>$post):        
+    foreach($dataPost as $key=>$post){
         echo "<h3>{$post->title}         </h3>";
         echo "<p> {$post->user->name}    </p>";
         echo "<p> {$post->category->name}</p>";
         echo "<hr>";
-    endforeach;
+    }
     /* Fin Post */
 
     /* Category */
     $dataCategory  = App\Category::all();
-    $dataCategory  = App\Category::paginate(10);
     $dataCategory2 = DB::select('select * from categories');
     $dataCategory3 = DB::table('categories')
                         ->get();
 
-    foreach($dataCategory as $key=>$category):
+    foreach($dataCategory as $key=>$category){
         echo "<h1>{$category->name}</h1>";
 
-        foreach($category->posts as $key=>$post):
+        foreach($category->posts as $key=>$post){
             echo "<h3>{$post->title}         </h3>";
             echo "<p> {$post->user->name}    </p>";
             echo "<p> {$post->category->name}</p>";
-        endforeach;
+        }
         echo "<hr>";
-    endforeach;       
+    }
     /* Fin Category */
 });
 

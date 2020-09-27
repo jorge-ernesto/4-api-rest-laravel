@@ -18,12 +18,14 @@ class Post extends Model
         "image"        
     ];
 
-    /* Relacion de muchos a uno (Un post solo tiene un usuario y una categoria) */
+    /* RELACION DE MUCHOS A UNO */
+    //Un post solo tiene un usuario
     public function user(){
-        return $this->belongsTo("App\User");
+        return $this->belongsTo("App\User", "user_id");
     }
 
+    //Un post solo tiene una categoria
     public function category(){
-        return $this->belongsTo("App\Category");
+        return $this->belongsTo("App\Category", "category_id");
     }
 }
