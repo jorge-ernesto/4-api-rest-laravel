@@ -19,9 +19,15 @@ class JwtAuth
                         ->first();
         error_log(json_encode($user));        
 
-        if(isset($user)){
+        if(empty($user)){
+            $data = array(
+                "status"  => "error",
+                "code"    => "400",
+                "message" => "No se pudo autenticar al usuario ingresado"
+            );            
+        }else{
             $token = array(
-                "sub"     => $user->id,
+                "sub"      => $user->id,
                 "name"    => $user->name,
                 "surname" => $user->surname,                
                 "email"   => $user->email,                
@@ -32,18 +38,52 @@ class JwtAuth
             $jwt    = JWT::encode($token, $this->key, "HS256"); //Generamos el token con la libreria JWT       
             $decode = JWT::decode($jwt, $this->key, ["HS256"]);
             
-            if(!$getToken){                   
-                return $jwt;                
+            if(!$getToken){  
+                $data = array(
+                    "status"  => "success",
+                    "code"    => "200",
+                    "message" => "El usuario se ha logueado",
+                    "token"    => $jwt               
+                );                                                
             }else{                
-                return $decode;                
+                $data = array(
+                    "status"  => "success",
+                    "code"    => "200",
+                    "message" => "El usuario se encontro",
+                    "user"    => $decode               
+                );        
             }
-        }else{
-            $data = array(
-                "status"  => "error",
-                "message" => "No se pudo autenticar al usuario ingresado"
-            );
         }
         
         return $data;
+    }
+
+    public function checkToken($jwt, $getIdentity = false){
+        $auth = false;
+        $decode = NULL;
+
+        try {
+            $decode = JWT::decode($jwt, $this->key, ["HS256"]);
+            error_log("****** decode ******");
+            error_log(json_encode($decode));
+        } catch (\Exception $e) {
+            $auth = false;            
+        } catch (\UnexpectedValueException $e) {
+            $auth = false;            
+        } catch (\DomainException $e) {
+            $auth = false;            
+        }
+
+        if(!empty($decode) && is_object($decode) && isset($decode->sub)){
+            $auth = true;
+        }else{
+            $auth = false;
+        }
+
+        if($getIdentity){
+            return $decode;
+        }
+
+        return $auth;
     }
 }

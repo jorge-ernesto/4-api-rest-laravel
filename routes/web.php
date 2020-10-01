@@ -22,8 +22,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post("/api/register", "UserController@register");
-Route::post("/api/login"   , "UserController@login");
+Route::post("/api/register"             , "UserController@register");
+Route::post("/api/login"                , "UserController@login");
+Route::post("/api/user/update"          , "UserController@update");                         //Tiene el middleware de autenticacion
+Route::post("/api/user/upload"          , "UserController@upload")->middleware('api.auth'); //Tiene el middleware de autenticacion
+Route::get("/api/user/avatar/{filename}", "UserController@getImage");                       //Metodo publico
 
 /* Ruta para pruebas */
 Route::get('/test', function(){
