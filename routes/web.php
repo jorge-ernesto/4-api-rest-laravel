@@ -17,56 +17,33 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
-/* Ruta por defecto */
+//Ruta por defecto
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post("/api/register"             , "UserController@register");
-Route::post("/api/login"                , "UserController@login");
-Route::post("/api/user/update"          , "UserController@update");                         //Tiene el middleware de autenticacion
-Route::post("/api/user/upload"          , "UserController@upload")->middleware('api.auth'); //Tiene el middleware de autenticacion
-Route::get("/api/user/avatar/{filename}", "UserController@getImage");                       //Metodo publico
+//RUTAS DEL API
+    /**
+     * Metodos HTTP comunes
+     * 
+     * GET   : Conseguir datos o recursos
+     * POST  : Guardar datos o recursos o hacer logica y devolver algo
+     * PUT   : Actualizar recursos o datos
+     * DELETE: Elimianr datos o recursos 
+     *  
+     */
 
-/* Ruta para pruebas */
-Route::get('/test', function(){
-    /* Post */
-    $dataPost  = App\Post::all();    
-    $dataPost2 = DB::select('select * from posts');
-    $dataPost3 = DB::table('posts')
-                    ->get();
+    //Rutas de prueba
+    Route::get("/pruebas/post", "PruebasController@post");
+    Route::get("/pruebas/category", "PruebasController@category");
 
-    foreach($dataPost as $key=>$post){
-        echo "<h3>{$post->title}         </h3>";
-        echo "<p> {$post->user->name}    </p>";
-        echo "<p> {$post->category->name}</p>";
-        echo "<hr>";
-    }
-    /* Fin Post */
+    //Rutas de usuarios
+    Route::post("/api/register"             , "UserController@register");
+    Route::post("/api/login"                , "UserController@login");
+    Route::post("/api/user/update"          , "UserController@update");                         //Tiene el middleware de autenticacion
+    Route::post("/api/user/upload"          , "UserController@upload")->middleware('api.auth'); //Tiene el middleware de autenticacion
+    Route::get("/api/user/avatar/{filename}", "UserController@getImage");                       
+    Route::get("/api/user/detail/{id}"      , "UserController@detail");                         
 
-    /* Category */
-    $dataCategory  = App\Category::all();
-    $dataCategory2 = DB::select('select * from categories');
-    $dataCategory3 = DB::table('categories')
-                        ->get();
+    //Rutas de categorias
 
-    foreach($dataCategory as $key=>$category){
-        echo "<h1>{$category->name}</h1>";
-
-        foreach($category->posts as $key=>$post){
-            echo "<h3>{$post->title}         </h3>";
-            echo "<p> {$post->user->name}    </p>";
-            echo "<p> {$post->category->name}</p>";
-        }
-        echo "<hr>";
-    }
-    /* Fin Category */
-});
-
-/**
- Rutas del API
- GET   : Conseguir datos o recursos
- POST  : Guardar datos o recursos o hacer logica y devolver algo
- PUT   : Actualizar recursos o datos
- DELETE: Elimianr datos o recursos  
-*/

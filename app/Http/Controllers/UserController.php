@@ -199,7 +199,7 @@ class UserController extends Controller
               
         /* Actualizamos usuario */
         if($actualizamos_usuario){
-            $usuarioActualizado           = App\User::findOrFail($user->sub);
+            $usuarioActualizado           = App\User::find($user->sub); //findOrFail cuando falla, retorna una pagina web
             $usuarioActualizado->name     = $params_array['name'];
             $usuarioActualizado->surname  = $params_array['surname'];        
             $usuarioActualizado->email    = $params_array['email'];                        
@@ -292,5 +292,27 @@ class UserController extends Controller
 
             return response()->json($data, $data['code']);
         }                      
+    }
+
+    public function detail($id){
+        $user = App\User::find($id); //findOrFail cuando falla, retorna una pagina web
+        error_log(json_encode($user));
+        
+        if(is_object($user)){
+            $data = array(
+                "status"  => "success",
+                "code"    => "200",
+                "message" => "Usuario encontrado",
+                "user"    => $user
+            );
+        }else{
+            $data = array(
+                "status"  => "error",
+                "code"    => "400",
+                "message" => "Usuario no encontrado"                
+            );
+        }        
+
+        return response()->json($data, $data['code']);
     }
 }

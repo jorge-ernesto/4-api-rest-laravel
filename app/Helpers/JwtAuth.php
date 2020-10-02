@@ -17,7 +17,7 @@ class JwtAuth
         $user = App\User::where("email", "=", $email)
                         ->where("password", "=", $password)
                         ->first();
-        error_log(json_encode($user));        
+        error_log(json_encode($user));
 
         if(empty($user)){
             $data = array(
