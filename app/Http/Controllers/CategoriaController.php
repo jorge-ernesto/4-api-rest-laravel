@@ -15,8 +15,8 @@ class CategoriaController extends Controller
     }
 
     public function index()
-    {
-        $categories = App\Category::all()->load('posts');      
+    {          
+        $categories = App\Category::all()->load('posts');
         
         return response()->json([
             "code"       => 200,

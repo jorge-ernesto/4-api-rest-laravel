@@ -298,7 +298,7 @@ class PostController extends Controller
 
     public function getPostsByCategory($id){
         $posts = App\Post::where('category_id', $id)
-                        ->get();
+                        ->get();        
         
         return response()->json([
             "code"   => 200,
