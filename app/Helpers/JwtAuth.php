@@ -17,7 +17,7 @@ class JwtAuth
         $user = App\User::where("email", "=", $email)
                         ->where("password", "=", $password)
                         ->first();
-        error_log(json_encode($user));
+        // error_log(json_encode($user));
 
         if(empty($user)){
             $data = array(
@@ -64,8 +64,8 @@ class JwtAuth
 
         try {
             $decode = JWT::decode($jwt, $this->key, ["HS256"]);
-            error_log("****** decode ******");
-            error_log(json_encode($decode));
+            // error_log("****** decode ******");
+            // error_log(json_encode($decode));
         } catch (\Exception $e) {
             $auth = false;            
         } catch (\UnexpectedValueException $e) {

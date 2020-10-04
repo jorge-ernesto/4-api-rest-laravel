@@ -40,10 +40,13 @@ Route::get('/', function () {
     //Rutas de usuarios
     Route::post("/api/register"             , "UserController@register");
     Route::post("/api/login"                , "UserController@login");
-    Route::post("/api/user/update"          , "UserController@update");                         //Tiene el middleware de autenticacion
+    Route::post("/api/user/update"          , "UserController@update"); //Tiene el middleware de autenticacion
     Route::post("/api/user/upload"          , "UserController@upload")->middleware('api.auth'); //Tiene el middleware de autenticacion
     Route::get("/api/user/avatar/{filename}", "UserController@getImage");                       
     Route::get("/api/user/detail/{id}"      , "UserController@detail");                         
 
     //Rutas de categorias
+    Route::resource('/api/category', 'CategoriaController');
 
+    //Rutas de entradas
+    Route::resource('/api/post', 'PostController');

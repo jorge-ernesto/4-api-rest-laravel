@@ -18,7 +18,8 @@ class UserController extends Controller
      * Se envia un parametro llamado json por Postman, @param {"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com","password":"lilia"}
      * Esto para registrar el usuario
      */   
-    public function register(Request $request){        
+    public function register(Request $request)
+    {        
         /* Obtenemos todo el request */
         //$json       = $request->json;
         $json         = $request->input("json", null); //En caso no me llegara el valor seria null
@@ -86,7 +87,8 @@ class UserController extends Controller
      * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"lilia","getToken":true} 
      * Esto para retornar el token desencriptado
      */       
-    public function login(Request $request){    
+    public function login(Request $request)
+    {    
         /* Obtenemos todo el request */
         //$json       = $request->json;
         $json         = $request->input("json", null);
@@ -137,7 +139,8 @@ class UserController extends Controller
         return response()->json($data, $data['code']);
     }
 
-    public function encriptar($password){
+    public function encriptar($password)
+    {
         return Hash("MD5", $password); //Hash("SHA256", $password); //Hash::make($password);
     }
 
@@ -152,7 +155,8 @@ class UserController extends Controller
      * Se envia un parametro llamado json por Postman, @param {"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com"}      
      * Esto para actualizar el usuario
      */     
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         /* Comprobamos si el usuario esta identificado */
         $token      = $request->header("Authorization");            
         $token      = str_replace('"', '', $token);
@@ -169,7 +173,7 @@ class UserController extends Controller
 
         /* Validamos datos */
         if($checkToken && !empty($params_array)){
-            /* Obtenemos id del usuario */
+            /* Obtenemos usuario autenticado */
             $user = $jwtAuth->checkToken($token, true);                                
 
             $params_array = array_map("trim", $params_array);
@@ -226,7 +230,8 @@ class UserController extends Controller
      * Se envia un file llamado file0 por Postman      
      * Esto subira la imagen del usuario
      */
-    public function upload(Request $request){
+    public function upload(Request $request)
+    {
         /* Recogemos datos de la peticion */        
         $image = $request->file('file0'); //name del campo del fronted se llamara file0
 
@@ -270,14 +275,15 @@ class UserController extends Controller
             );  
         }         
 
-        //return response($data, $data['code'])->header('Content-Type', 'text-plain'); // De esta forma se suben imagenes de usuario
-        return response()->json($data, $data['code']); // Para probar en postman
+        //return response($data, $data['code'])->header('Content-Type', 'text-plain'); //De esta forma se suben imagenes de usuario
+        return response()->json($data, $data['code']); //Para probar en postman
     }
 
     /**
      * Funcion para obtener imagenes
      */
-    public function getImage($filename){        
+    public function getImage($filename)
+    {        
         $exists = \Storage::disk('public')->exists("users/$filename");
         
         if($exists){
@@ -294,9 +300,13 @@ class UserController extends Controller
         }                      
     }
 
-    public function detail($id){
+    /**
+     * Funcion para obtener el usuario
+     */
+    public function detail($id)
+    {
         $user = App\User::find($id); //findOrFail cuando falla, retorna una pagina web
-        error_log(json_encode($user));
+        // error_log(json_encode($user));
         
         if(is_object($user)){
             $data = array(

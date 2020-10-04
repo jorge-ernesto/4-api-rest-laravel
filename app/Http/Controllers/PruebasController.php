@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class PruebasController extends Controller
 {
-    public function post(Request $request){
+    public function post(Request $request)
+    {
         $dataPost  = App\Post::all();    
         $dataPost2 = DB::select('select * from posts');
         $dataPost3 = DB::table('posts')
@@ -23,7 +24,8 @@ class PruebasController extends Controller
         }
     }
 
-    public function category(Request $request){
+    public function category(Request $request)
+    {
         $dataCategory  = App\Category::all();
         $dataCategory2 = DB::select('select * from categories');
         $dataCategory3 = DB::table('categories')
