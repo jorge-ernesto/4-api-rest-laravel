@@ -12,7 +12,13 @@ class PostController extends Controller
 {    
     public function __construct()
     {
-        $this->middleware('api.auth', ['except' => ['index', 'show']]);
+        $this->middleware('api.auth', ['except' => [
+            'index', 
+            'show', 
+            'getImage', 
+            'getPostsByCategory', 
+            'getPostsByUser'
+        ]]);
     }
 
     public function index()
@@ -23,7 +29,7 @@ class PostController extends Controller
             "code"   => 200,
             "status" => "success",
             "posts"  => $posts
-        ]);
+        ], 200);
     }
     
     public function create()
@@ -222,11 +228,93 @@ class PostController extends Controller
         return response()->json($data, $data["code"]);        
     }
 
-    public function getIdentity($request){
+    public function getIdentity($request)
+    {
         $token   = $request->header("Authorization");            
         $token   = str_replace('"', '', $token);
         $jwtAuth = new JwtAuth();              
         $user    = $jwtAuth->checkToken($token, true);
         return $user;
     }    
+
+    public function upload(Request $request)
+    {
+        /* Recogemos la imagen de la peticion */        
+        $image = $request->file('file0'); //name del campo del fronted se llamara file0           
+
+        $subimos_imagen = false;
+
+        /* Validamos imagen */
+        $validator = Validator::make($request->all(), [
+            'file0' => 'required|image|mimes:jpg,jpeg,png,gif',                
+        ]); 
+        
+        if($validator->fails()){
+            $data = array(
+                "status"  => "error",
+                "code"    => "400",
+                "message" => "Error al subir imagen",
+                "errors"  => $validator->errors()
+            );
+        }else{
+            /* Subimos imagen */
+            $subimos_imagen = true;
+        }
+
+        /* Subimos imagen */
+        if($subimos_imagen){
+            $image_name = time()."_".$image->getClientOriginalName();
+            \Storage::disk('public')->put("posts/$image_name", \File::get($image));
+
+            $data = array(
+                "status"  => "success",
+                "code"    => "200",
+                "message" => "La imagen se subio correctamente",
+                "image"   => "$image_name"    
+            );  
+        }         
+
+        //return response($data, $data['code'])->header('Content-Type', 'text-plain'); //De esta forma se suben imagenes de usuario
+        return response()->json($data, $data['code']); //Para probar en postman
+    }
+
+    public function getImage($filename)
+    {        
+        $exists = \Storage::disk('public')->exists("posts/$filename");
+        
+        if($exists){
+            return \Storage::disk('public')->download("posts/$filename");
+            // return \Storage::disk('public')->get("users/$filename");
+        }else{
+            $data = array(
+                "status"  => "error",
+                "code"    => "404",
+                "message" => "La imagen no existe"
+            );
+
+            return response()->json($data, $data['code']);
+        }                      
+    }
+
+    public function getPostsByCategory($id){
+        $posts = App\Post::where('category_id', $id)
+                        ->get();
+        
+        return response()->json([
+            "code"   => 200,
+            "status" => "success",
+            "posts"  => $posts
+        ], 200);
+    }
+
+    public function getPostsByUser($id){
+        $posts = App\Post::where('user_id', $id)
+                        ->get();
+
+        return response()->json([
+            "code"   => 200,
+            "status" => "success",
+            "posts"  => $posts
+        ], 200);
+    }
 }

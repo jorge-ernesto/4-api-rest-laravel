@@ -232,7 +232,7 @@ class UserController extends Controller
      */
     public function upload(Request $request)
     {
-        /* Recogemos datos de la peticion */        
+        /* Recogemos la imagen de la peticion */        
         $image = $request->file('file0'); //name del campo del fronted se llamara file0
 
         $subimos_imagen = false;

@@ -22,7 +22,7 @@ class CategoriaController extends Controller
             "code"       => 200,
             "status"     => "success",
             "categories" => $categories
-        ]);
+        ], 200);
     }
 
     public function create()
