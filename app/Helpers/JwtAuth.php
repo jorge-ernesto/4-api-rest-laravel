@@ -3,6 +3,7 @@
 namespace App\Helpers; //Namespace de la clase
 
 use App;
+use Illuminate\Support\Facades\Hash;
 use Firebase\JWT\JWT;
 
 class JwtAuth
@@ -14,10 +15,13 @@ class JwtAuth
     }
 
     public function signup($email, $password, $getToken = false){       
-        $user = App\User::where("email", "=", $email)
-                        ->where("password", "=", $password)
+        $user = App\User::where("email", "=", $email)                        
                         ->first();
         // error_log(json_encode($user));
+
+        if(!Hash::check($password, $user->password)) {
+            $user = NULL;
+        }
 
         if(empty($user)){
             $data = array(

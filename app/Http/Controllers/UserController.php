@@ -126,7 +126,7 @@ class UserController extends Controller
         /* Validamos usuario */
         if($validamos_usuario){
             $email    = $params_array['email'];
-            $password = $this->encriptar($params_array['password']);
+            $password = $params_array['password'];
                         
             $jwtAuth = new JwtAuth();                
             if(!$params_array['getToken']){
@@ -141,7 +141,10 @@ class UserController extends Controller
 
     public function encriptar($password)
     {
-        return Hash("MD5", $password); //Hash("SHA256", $password); //Hash::make($password);
+        return Hash::make($password); 
+        //return Hash("MD5", $password); 
+        //return Hash("SHA256", $password); 
+        //return pasword_hash($password, PASSWORD_BCRYPT, ['cost' => 4])
     }
 
     /**
