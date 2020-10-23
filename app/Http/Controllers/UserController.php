@@ -15,7 +15,7 @@ class UserController extends Controller
     /**
      * Funcion para registrar usuario
      * 
-     * Se envia un parametro llamado json por Postman, @param {"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com","password":"lilia"}
+     * Se envia un parametro llamado json por Postman, @param {"name":"Lilia","surname":"Sturman","email":"lilia@lilia.com","password":"conejitalinda777"}
      * Esto para registrar el usuario
      */   
     public function register(Request $request)
@@ -81,10 +81,10 @@ class UserController extends Controller
     /**
      * Funcion para loguear usuario
      * 
-     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"lilia","getToken":false}        
+     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"conejitalinda777"}        
      * Esto para retornar el token del usuario autenticado
      * 
-     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"lilia","getToken":true} 
+     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"conejitalinda777","getToken":true} 
      * Esto para retornar el token desencriptado
      */       
     public function login(Request $request)
