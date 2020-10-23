@@ -1,4 +1,4 @@
-<?php //Creamos este provider con "php artisan make provider JwtAuthServiceProvider" para que funcione es necesario agregarlo en config/app.php
+<?php
 
 namespace App\Providers;
 

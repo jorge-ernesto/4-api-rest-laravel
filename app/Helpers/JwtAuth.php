@@ -19,11 +19,7 @@ class JwtAuth
                         ->first();
         // error_log(json_encode($user));
 
-        if(!Hash::check($password, $user->password)) {
-            $user = NULL;
-        }
-
-        if(empty($user)){
+        if(empty($user) || !Hash::check($password, $user->password)){
             $data = array(
                 "status"  => "error",
                 "code"    => "400",
