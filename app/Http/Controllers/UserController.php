@@ -200,16 +200,17 @@ class UserController extends Controller
             $data = array(
                 "status"  => "error",
                 "code"    => "400",
-                "message" => "EL usuario no esta identificado"
-            ); 
+                "message" => "EL usuario no esta identificado ó los datos enviados no son los correctos"
+            );
         }
               
         /* Actualizamos usuario */
         if($actualizamos_usuario){
-            $usuarioActualizado           = App\User::find($user->sub); //findOrFail cuando falla, retorna una pagina web
-            $usuarioActualizado->name     = $params_array['name'];
-            $usuarioActualizado->surname  = $params_array['surname'];        
-            $usuarioActualizado->email    = $params_array['email'];                        
+            $usuarioActualizado              = App\User::find($user->sub); //findOrFail cuando falla, retorna una pagina web
+            $usuarioActualizado->name        = $params_array['name'];
+            $usuarioActualizado->surname     = $params_array['surname'];        
+            $usuarioActualizado->email       = $params_array['email'];
+            $usuarioActualizado->description = $params_array['description'];
             $usuarioActualizado->update();
             
             $data = array(

@@ -27,12 +27,14 @@ class JwtAuth
             );            
         }else{
             $token = array(
-                "sub"      => $user->id,
-                "name"    => $user->name,
-                "surname" => $user->surname,                
-                "email"   => $user->email,                
-                "iat"     => time(),
-                "exp"     => time() * (7*24*60*60) //Token con duracion de una semana
+                "sub"         => $user->id,
+                "name"        => $user->name,
+                "surname"     => $user->surname,                
+                "email"       => $user->email,      
+                "description" => $user->description,
+                "image"       => $user->image,          
+                "iat"         => time(),
+                "exp"         => time() * (7*24*60*60) //Token con duracion de una semana
             );             
             
             $jwt    = JWT::encode($token, $this->key, "HS256"); //Generamos el token con la libreria JWT       
