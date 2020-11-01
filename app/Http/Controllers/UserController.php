@@ -211,6 +211,7 @@ class UserController extends Controller
             $usuarioActualizado->surname     = $params_array['surname'];        
             $usuarioActualizado->email       = $params_array['email'];
             $usuarioActualizado->description = $params_array['description'];
+            $usuarioActualizado->image       = $params_array['image'];
             $usuarioActualizado->update();
             
             $data = array(
@@ -246,7 +247,7 @@ class UserController extends Controller
             $data = array(
                 "status"  => "error",
                 "code"    => "400",
-                "message" => "Error al subir imagen"
+                "message" => "Error al subir imagen, los datos enviados no son los correctos"
             );
         }else{                        
             $validator = Validator::make($request->all(), [
