@@ -288,7 +288,8 @@ class UserController extends Controller
      * Funcion para obtener imagenes
      */
     public function getImage($filename)
-    {        
+    {    
+        error_log($filename);
         $exists = \Storage::disk('public')->exists("users/$filename");
         
         if($exists){

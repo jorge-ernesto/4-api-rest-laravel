@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use App\Helpers\JwtAuth;
 
 class PostController extends Controller
-{    
+{
     public function __construct()
     {
         $this->middleware('api.auth', ['except' => [
-            'index', 
-            'show', 
-            'getImage', 
-            'getPostsByCategory', 
+            'index',
+            'show',
+            'getImage',
+            'getPostsByCategory',
             'getPostsByUser'
         ]]);
     }
@@ -24,46 +24,46 @@ class PostController extends Controller
     public function index()
     {
         $posts = App\Post::all()->load(['category', 'user']);
-       
+
         return response()->json([
             "code"   => 200,
             "status" => "success",
             "posts"  => $posts
         ], 200);
     }
-    
+
     public function create()
     {
         //
     }
-    
+
     public function store(Request $request)
     {
-        /* Obtenemos usuario autenticado */  
-        $user = $this->getIdentity($request);   
+        /* Obtenemos usuario autenticado */
+        $user = $this->getIdentity($request);
 
         /* Obtenemos todo el request */
         //$json       = $request->json;
         $json         = $request->input("json", null); //En caso no me llegara el valor seria null
         $params       = json_decode($json);            //Convierte json en un objeto de php
-        $params_array = json_decode($json, true);      //Convierte json en un array de php        
+        $params_array = json_decode($json, true);      //Convierte json en un array de php
 
         $guardamos_post = false;
 
-        /* Validamos datos */        
+        /* Validamos datos */
         if(empty($params_array)){
             $data = array(
                 "status"  => "error",
                 "code"    => "400",
                 "message" => "Los datos enviados no son los correctos"
-            );            
+            );
         }else{
             $params_array = array_map("trim", $params_array);
             $validator = Validator::make($params_array, [
-                "category_id" => "required",                
+                "category_id" => "required",
                 "title"       => "required|string",
-                "content"     => "required|string", 
-                "image"       => "required",                               
+                "content"     => "required|string",
+                "image"       => "required",
             ]);
 
             if($validator->fails()){
@@ -73,32 +73,32 @@ class PostController extends Controller
                     "message" => "El post no se ha creado",
                     "errors"  => $validator->errors()
                 );
-            }else{                
+            }else{
                 $guardamos_post = true;
             }
         }
 
         /* Guardamos post */
-        if($guardamos_post){                         
+        if($guardamos_post){
             $post              = new App\Post;
             $post->user_id     = $user->sub;
-            $post->category_id = $params_array['category_id'];            
-            $post->title       = $params_array['title'];            
-            $post->content     = $params_array['content'];                                    
-            $post->image       = $params_array['image'];                                    
+            $post->category_id = $params_array['category_id'];
+            $post->title       = $params_array['title'];
+            $post->content     = $params_array['content'];
+            $post->image       = $params_array['image'];
             $post->save();
-    
+
             $data = array(
                 "status"  => "success",
                 "code"    => "200",
                 "message" => "El post se ha creado correctamente",
                 "post"    => $post
-            ); 
+            );
         }
 
         return response()->json($data, $data['code']);
     }
-    
+
     public function show($id)
     {
         $post = App\Post::find($id);
@@ -108,27 +108,27 @@ class PostController extends Controller
                 "code"    => 200,
                 "status"  => "success",
                 "message" => "Post encontrado",
-                "post"    => $post->load(['category', 'user'])                
+                "post"    => $post->load(['category', 'user'])
             );
         }else{
             $data = array(
                 "code"    => 400,
                 "status"  => "error",
-                "message" => "No se encontro post"            
+                "message" => "No se encontro post"
             );
         }
-       
+
         return response()->json($data, $data["code"]);
     }
-    
+
     public function edit($id)
     {
         //
     }
-    
+
     public function update(Request $request, $id)
     {
-        /* Obtenemos usuario autenticado */  
+        /* Obtenemos usuario autenticado */
         $user = $this->getIdentity($request);
 
         /* Obtenemos todo el request */
@@ -139,19 +139,19 @@ class PostController extends Controller
 
         $actualizamos_post = false;
 
-        /* Validamos datos */        
+        /* Validamos datos */
         if(empty($params_array)){
             $data = array(
                 "status"  => "error",
                 "code"    => "400",
                 "message" => "Los datos enviados no son los correctos"
-            );            
+            );
         }else{
             $params_array = array_map("trim", $params_array);
             $validator = Validator::make($params_array, [
-                "category_id" => "required",                
+                "category_id" => "required",
                 "title"       => "required|string",
-                "content"     => "required|string"                
+                "content"     => "required|string"
             ]);
 
             if($validator->fails()){
@@ -168,10 +168,10 @@ class PostController extends Controller
 
         /* Actualizamos post */
         if($actualizamos_post){
-            //$post = App\Post::find($id);                        
+            //$post = App\Post::find($id);
             $post = App\Post::where('id', $id)
                             ->where('user_id', $user->sub)
-                            ->first();       
+                            ->first();
 
             if(empty($post)){
                 $data = array(
@@ -179,10 +179,10 @@ class PostController extends Controller
                     "code"    => "400",
                     "message" => "El post no se encontre o no tiene permisos para actualizarlo"
                 );
-            }else{                
+            }else{
                 $post->category_id = $params_array['category_id'];
-                $post->title       = $params_array['title'];            
-                $post->content     = $params_array['content'];                                                
+                $post->title       = $params_array['title'];
+                $post->content     = $params_array['content'];
                 $post->update();
 
                 $data = array(
@@ -190,24 +190,24 @@ class PostController extends Controller
                     "code"    => "200",
                     "message" => "El post se ha actualizado correctamente",
                     "post"    => $post
-                ); 
-            }            
+                );
+            }
         }
 
         return response()->json($data, $data['code']);
     }
-    
+
     public function destroy(Request $request, $id)
     {
-        /* Obtenemos usuario autenticado */  
+        /* Obtenemos usuario autenticado */
         $user = $this->getIdentity($request);
 
         /* Obtenemos post */
-        //$post = App\Post::find($id);        
+        //$post = App\Post::find($id);
         $post = App\Post::where('id', $id)
                         ->where('user_id', $user->sub)
-                        ->first();       
-        
+                        ->first();
+
         /* Validamos datos */
         if(is_object($post)){
             /* Eliminamos post */
@@ -224,31 +224,31 @@ class PostController extends Controller
                 "message" => "No se encontro post o no tiene permisos para eliminarlo"
             );
         }
-       
-        return response()->json($data, $data["code"]);        
+
+        return response()->json($data, $data["code"]);
     }
 
     public function getIdentity($request)
     {
-        $token   = $request->header("Authorization");            
+        $token   = $request->header("Authorization");
         $token   = str_replace('"', '', $token);
-        $jwtAuth = new JwtAuth();              
+        $jwtAuth = new JwtAuth();
         $user    = $jwtAuth->checkToken($token, true);
         return $user;
-    }    
+    }
 
     public function upload(Request $request)
     {
-        /* Recogemos la imagen de la peticion */        
-        $image = $request->file('file0'); //name del campo del fronted se llamara file0           
+        /* Recogemos la imagen de la peticion */
+        $image = $request->file('file0'); //name del campo del fronted se llamara file0
 
         $subimos_imagen = false;
 
         /* Validamos imagen */
         $validator = Validator::make($request->all(), [
-            'file0' => 'required|image|mimes:jpg,jpeg,png,gif',                
-        ]); 
-        
+            'file0' => 'required|image|mimes:jpg,jpeg,png,gif',
+        ]);
+
         if($validator->fails()){
             $data = array(
                 "status"  => "error",
@@ -270,18 +270,18 @@ class PostController extends Controller
                 "status"  => "success",
                 "code"    => "200",
                 "message" => "La imagen se subio correctamente",
-                "image"   => "$image_name"    
-            );  
-        }         
+                "image"   => "$image_name"
+            );
+        }
 
         //return response($data, $data['code'])->header('Content-Type', 'text-plain'); //De esta forma se suben imagenes de usuario
         return response()->json($data, $data['code']); //Para probar en postman
     }
 
     public function getImage($filename)
-    {        
+    {
         $exists = \Storage::disk('public')->exists("posts/$filename");
-        
+
         if($exists){
             return \Storage::disk('public')->download("posts/$filename");
             // return \Storage::disk('public')->get("users/$filename");
@@ -293,13 +293,13 @@ class PostController extends Controller
             );
 
             return response()->json($data, $data['code']);
-        }                      
+        }
     }
 
     public function getPostsByCategory($id){
         $posts = App\Post::where('category_id', $id)
-                        ->get();        
-        
+                        ->get();
+
         return response()->json([
             "code"   => 200,
             "status" => "success",
