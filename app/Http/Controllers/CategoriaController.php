@@ -17,7 +17,7 @@ class CategoriaController extends Controller
     public function index()
     {
         $categories = App\Category::all()->load('posts');
-        error_log(json_encode($categories));
+        //error_log(json_encode($categories)); //Comentar esto ya que sino el log de PHP se ensuciaria demasiado, es llamado desde Angular cada segundo desde la function ngDoCheck
 
         return response()->json([
             "code"       => 200,

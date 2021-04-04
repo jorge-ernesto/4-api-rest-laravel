@@ -207,6 +207,10 @@ class UserController extends Controller
         /* Actualizamos usuario */
         if($actualizamos_usuario){
             $usuarioActualizado              = App\User::find($user->sub); //findOrFail cuando falla, retorna una pagina web
+
+            /* Eliminamos imagen anterior */
+            \Storage::disk('public')->delete("users/$usuarioActualizado->image");
+
             $usuarioActualizado->name        = $params_array['name'];
             $usuarioActualizado->surname     = $params_array['surname'];        
             $usuarioActualizado->email       = $params_array['email'];

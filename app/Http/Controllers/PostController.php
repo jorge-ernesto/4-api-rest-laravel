@@ -180,6 +180,9 @@ class PostController extends Controller
                     "message" => "El post no se encontre o no tiene permisos para actualizarlo"
                 );
             }else{
+                /* Eliminamos imagen anterior */
+                \Storage::disk('public')->delete("posts/$post->image");
+
                 $post->category_id = $params_array['category_id'];
                 $post->title       = $params_array['title'];
                 $post->content     = $params_array['content'];
