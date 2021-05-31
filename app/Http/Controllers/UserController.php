@@ -81,7 +81,7 @@ class UserController extends Controller
     /**
      * Funcion para loguear usuario
      * 
-     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"conejitalinda777"}        
+     * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"conejitalinda777","getToken":false}        
      * Esto para retornar el token del usuario autenticado
      * 
      * Se envia un parametro llamado json por Postman, @param {"email":"lilia@lilia.com","password":"conejitalinda777","getToken":true} 
@@ -206,7 +206,7 @@ class UserController extends Controller
               
         /* Actualizamos usuario */
         if($actualizamos_usuario){
-            $usuarioActualizado              = App\User::find($user->sub); //findOrFail cuando falla, retorna una pagina web
+            $usuarioActualizado              = App\User::find($user->sub); //findOrFail cuando falla retorna una pagina web
 
             /* Eliminamos imagen anterior */
             \Storage::disk('public')->delete("users/$usuarioActualizado->image");
@@ -293,7 +293,7 @@ class UserController extends Controller
      */
     public function getImage($filename)
     {    
-        error_log($filename);
+        // error_log($filename);
         $exists = \Storage::disk('public')->exists("users/$filename");
         
         if($exists){
@@ -315,7 +315,7 @@ class UserController extends Controller
      */
     public function detail($id)
     {
-        $user = App\User::find($id); //findOrFail cuando falla, retorna una pagina web
+        $user = App\User::find($id); //findOrFail cuando falla retorna una pagina web
         // error_log(json_encode($user));
         
         if(is_object($user)){

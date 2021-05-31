@@ -24,6 +24,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = App\Post::all()->load(['category', 'user']);
+        // error_log(json_encode($posts));
 
         return response()->json([
             "code"   => 200,
@@ -101,14 +102,18 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = App\Post::find($id);
+        // $post = App\Post::find($id); //findOrFail cuando falla retorna una pagina web
+        // $post = $post->load(['category', 'user'])        
+        
+        $post = App\Post::find($id)->load('category')
+                                   ->load('user');
 
         if(is_object($post)){
             $data = array(
                 "code"    => 200,
                 "status"  => "success",
                 "message" => "Post encontrado",
-                "post"    => $post->load(['category', 'user'])
+                "post"    => $post
             );
         }else{
             $data = array(
@@ -135,7 +140,11 @@ class PostController extends Controller
         //$json       = $request->json;
         $json         = $request->input("json", null); //En caso no me llegara el valor seria null
         $params       = json_decode($json);            //Convierte json en un objeto de php
-        $params_array = json_decode($json, true);      //Convierte json en un array de php
+        $params_array = json_decode($json, true);      //Convierte json en un array de php        
+
+        /* Eliminamos elementos que se cargan en el load de la funcion show, sino lo hacemos array_map fallara */
+        unset($params_array['category']);
+        unset($params_array['user']);
 
         $actualizamos_post = false;
 
@@ -151,7 +160,8 @@ class PostController extends Controller
             $validator = Validator::make($params_array, [
                 "category_id" => "required",
                 "title"       => "required|string",
-                "content"     => "required|string"
+                "content"     => "required|string",
+                "image"       => "required",
             ]);
 
             if($validator->fails()){
@@ -186,6 +196,7 @@ class PostController extends Controller
                 $post->category_id = $params_array['category_id'];
                 $post->title       = $params_array['title'];
                 $post->content     = $params_array['content'];
+                $post->image       = $params_array['image'];
                 $post->update();
 
                 $data = array(
@@ -301,7 +312,9 @@ class PostController extends Controller
 
     public function getPostsByCategory($id){
         $posts = App\Post::where('category_id', $id)
-                        ->get();
+                        ->get()
+                        ->load('category')
+                        ->load('user');
 
         return response()->json([
             "code"   => 200,
@@ -312,7 +325,9 @@ class PostController extends Controller
 
     public function getPostsByUser($id){
         $posts = App\Post::where('user_id', $id)
-                        ->get();
+                        ->get()
+                        ->load('category')
+                        ->load('user');
 
         return response()->json([
             "code"   => 200,
