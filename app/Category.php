@@ -11,7 +11,8 @@ class Category extends Model
     public $timestamps    = true;
 
     protected $fillable = [
-        "name"        
+        "name",
+        "date_publication"        
     ];
 
     /* RELACION DE UNO A MUCHOS */

@@ -68,8 +68,9 @@ class CategoriaController extends Controller
 
         /* Guardamos categoria */
         if($guardamos_categoria){
-            $category       = new App\Category;
-            $category->name = $params_array['name'];
+            $category                   = new App\Category;
+            $category->name             = $params_array['name'];
+            $category->date_publication = $params_array['date_publication'];
             $category->save();
 
             $data = array(

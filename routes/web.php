@@ -43,7 +43,7 @@ Route::get('/', function () {
     Route::put("/api/user/update"           , "UserController@update"); //Tiene el middleware de autenticacion en la funcion update
     Route::post("/api/user/upload"          , "UserController@upload")->middleware('api.auth'); //Tiene el middleware de autenticacion
     Route::get("/api/user/avatar/{filename}", "UserController@getImage");
-    Route::get("/api/user/detail/{id}"      , "UserController@detail");
+    Route::get("/api/user/detail/{id}"      , "UserController@getUser");
 
     //Rutas de categorias
     Route::resource('/api/category', 'CategoriaController');

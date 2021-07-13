@@ -209,7 +209,9 @@ class UserController extends Controller
             $usuarioActualizado              = App\User::find($user->sub); //findOrFail cuando falla retorna una pagina web
 
             /* Eliminamos imagen anterior */
-            \Storage::disk('public')->delete("users/$usuarioActualizado->image");
+            if( $params_array['image'] != $usuarioActualizado->image ){ //Si la imagen que se envio para actualizar es diferente de la imagen actual
+                \Storage::disk('public')->delete("users/$usuarioActualizado->image");
+            }
 
             $usuarioActualizado->name        = $params_array['name'];
             $usuarioActualizado->surname     = $params_array['surname'];        
@@ -313,7 +315,7 @@ class UserController extends Controller
     /**
      * Funcion para obtener el usuario
      */
-    public function detail($id)
+    public function getUser($id)
     {
         $user = App\User::find($id); //findOrFail cuando falla retorna una pagina web
         // error_log(json_encode($user));
