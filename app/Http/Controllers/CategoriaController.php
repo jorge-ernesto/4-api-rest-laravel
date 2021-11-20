@@ -15,15 +15,49 @@ class CategoriaController extends Controller
         $this->middleware('api.auth', ['except' => ['index', 'show']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = App\Category::all()->load('posts');
-        //error_log(json_encode($categories)); //Comentar esto ya que sino el log de PHP se ensuciaria demasiado, es llamado desde Angular cada segundo desde la function ngDoCheck
+        /* Obtenemos todo el request */
+        // error_log('index');
+        // error_log(json_encode($request->all()));
+
+        /**
+         * Cargamos array de objetos de categorias sin paginacion
+         */
+        $categories = App\Category::all()->load('posts');        
+
+        /**
+         * Validamos texto a buscar, la propiedad "where" de Laravel controla la información cuando se le pasa NULL 
+         */    
+        $search = $request->search;
+        if($search == "undefined" || $search == "null" || trim($search) == ''){ //Angular envia data undefined o null con comillas al enviarlo por GET: this.url+'category?page='+page+'&search='+search
+            $search = NULL;
+        }
+
+        /**
+         * Cargamos array de objetos de categorias sin paginacion, usando Paginate y Load
+         */
+        $categories_ = App\Category::where('name', 'LIKE', '%'.$search.'%')
+                                    ->paginate('10');
+        $categories_->load('posts');          
+
+        /**
+         * Alternativa a Paginate y Load
+         * @link https://laravel.io/forum/02-27-2015-pagination-does-not-work-with-eager-loading
+         */ 
+        // $categories = App\Category::with('posts')->paginate('2');            
+
+        /* Validamos informacion a retornar */
+        // echo "<pre>";
+        // print_r($categories);
+        // echo "</pre>";
+        // error_log(json_encode($categories)); //Comentar esto ya que sino el log de PHP se ensuciaria demasiado, es llamado desde Angular cada segundo desde la function ngDoCheck
 
         return response()->json([
             "code"       => 200,
             "status"     => "success",
-            "categories" => $categories
+            "categories" => $categories,
+            "categories_" => $categories_
         ], 200);
     }
 
