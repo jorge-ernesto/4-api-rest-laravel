@@ -205,6 +205,26 @@ class CategoriaController extends Controller
 
     public function destroy($id)
     {
-        //
+        /* Obtenemos category */
+        $category = App\Category::find($id);        
+
+        /* Validamos datos */
+        if(is_object($category)){
+            /* Eliminamos category */
+            $category->delete();
+            $data = array(
+                "code"     => 200,
+                "status"   => "success",
+                "message" => "Categoria eliminada"
+            );
+        }else{
+            $data = array(
+                "code"     => 400,
+                "status"   => "error",
+                "message" => "No se encontro categoria"
+            );
+        }
+
+        return response()->json($data, $data["code"]);
     }
 }
