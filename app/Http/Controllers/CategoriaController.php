@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoriaController extends Controller
@@ -86,7 +87,8 @@ class CategoriaController extends Controller
 
     public function show($id)
     {
-        $category = App\Category::find($id);
+        // $category = App\Category::find($id);
+        $category = App\Category::select(DB::raw('id, name, DATE(date_publication) as date_publication'))->find($id);
 
         if(is_object($category)){
             $data = array(
@@ -119,6 +121,9 @@ class CategoriaController extends Controller
         $params       = json_decode($json);            //Convierte json en un objeto de php
         $params_array = json_decode($json, true);      //Convierte json en un array de php
 
+        /* Eliminamos elementos que se cargan en el load de la funcion show, sino lo hacemos array_map fallara */
+        unset($params_array['posts']);        
+
         $actualizamos_categoria = false;
 
         /* Validamos datos */
@@ -148,8 +153,9 @@ class CategoriaController extends Controller
 
         /* Actualizamos categoria */
         if($actualizamos_categoria){
-            $category       = App\Category::find($id);
-            $category->name = $params_array['name'];
+            $category                   = App\Category::find($id);
+            $category->name             = $params_array['name'];
+            $category->date_publication = $params_array['date_publication'];
             $category->update();
 
             $data = array(
